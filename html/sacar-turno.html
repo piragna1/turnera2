@@ -1,25 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Turnera</title>
-    <link rel="stylesheet" href="../css/estilos.css">
-</head>
-<body>
+    <link rel="stylesheet" href="../css/estilos.css" />
+  </head>
+  <body>
     <header>
-        <nav>
-            <ul>
-                <li><a href="#">Sacar turno</a></li>
-                <li><a href="./lista-turnos.html">Listado de turnos</a></li>
-            </ul>
-        </nav>
+      <nav>
+        <ul>
+          <li><a href="#">Sacar turno</a></li>
+          <li><a href="./lista-turnos.html">Listado de turnos</a></li>
+        </ul>
+      </nav>
     </header>
-    <body>
-        <main></main>
-    </body>
+    <main>
+      <form>
+        <label for="nombre">Nombre</label>
+        <input type="text" name="nombre" id="nombre" placeholder="Nombre" />
+        <label for="apellido">Apellido</label>
+        <input
+          type="text"
+          name="apellido"
+          id="apellido"
+          placeholder="Apellido"
+        />
+        <label for="numero">Telefono</label>
+        <input type="text" name="numero" id="numero" placeholder="Telefono" />
+        <label for="fecha">Fecha</label>
+        <input type="date" name="fecha" id="fecha" />
+        <button type="submit">Sacar turno</button>
+      </form>
+    </main>
     <footer>
-        <p>© 2024 Turnera. Todos los derechos reservados.</p>
+      <p>© 2024 Turnera. Todos los derechos reservados.</p>
     </footer>
-</body>
+    <script src="../js/script.js"></script>
+  </body>
 </html>
