@@ -1,6 +1,11 @@
 turnos = [];
 
-function agregarTurno(nombre,apellido,telefono,fecha){
+function agregarTurno(event){
+    event.preventDefault();
+    let nombre = document.getElementById('nombre').value;
+    let apellido = document.getElementById('apellido').value;
+    let telefono = document.getElementById('telefono').value;
+    let fecha = document.getElementById('fecha').value;
     turnos.push({
         nombre,
         apellido,
