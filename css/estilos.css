@@ -76,7 +76,7 @@ main form div #hora{
     margin-bottom:10px;
 }
 
-.error{
+.error, #mensajeError{
     color: red;
 }
 /* MAIN */
