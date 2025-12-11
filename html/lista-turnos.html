@@ -6,7 +6,7 @@
     <title>Turnera</title>
     <link rel="stylesheet" href="../css/estilos.css">
 </head>
-<body>
+<body onload="listarTurnos()">
     <header>
         <nav>
             <ul>
@@ -16,7 +16,11 @@
         </nav>
     </header>
     <body>
-        <main></main>
+        <main>
+            <ul id="lista-turnos">
+            </ul>
+        </main>
+        <script src="../js/lista-turnos.js"></script>
     </body>
     <footer>
         <p>© 2024 Turnera. Todos los derechos reservados.</p>
