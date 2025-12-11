@@ -16,10 +16,11 @@
       </nav>
     </header>
     <main>
-      <form onsubmit="agregarTurno(event)">
+      <form onsubmit="agregarTurno(event)" id="form">
         <div>
-          <label for="nombre">Nombre</label>
+          <label for="nombre" id="label-nombre">Nombre</label>
           <input type="text" name="nombre" id="nombre" placeholder="Nombre" />
+          <p></p>
         </div>
         <div>
           <label for="apellido">Apellido</label>
@@ -29,17 +30,28 @@
             id="apellido"
             placeholder="Apellido"
           />
+          <p></p>
         </div>
         <div>
           <label for="telefono">Telefono</label>
           <input type="text" name="telefono" id="telefono" placeholder="Telefono" />
+          <p></p>
         </div>
         <div>
           <label for="fecha">Fecha</label>
           <input type="date" name="fecha" id="fecha" />
+          <p></p>
+        </div>
+        <div>
+          <label for="hora">Hora</label>
+          <input type="time" name="hora" id="hora" />
+          <p></p>
         </div>
         <div>
           <button>Sacar turno</button>
+        </div>
+        <div>
+          <p id="mensajeError"></p>
         </div>
       </form>
     </main>
