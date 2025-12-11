@@ -64,7 +64,7 @@ main form {
 main form div {
     display: flex;
     flex-direction: column;
-    width: 75%;
+    width: 50%;
     align-self: center;
 }
 
@@ -72,8 +72,12 @@ main form div label{
     align-self:center;
 }
 
-main form div #fecha{
+main form div #hora{
     margin-bottom:10px;
+}
+
+.error{
+    color: red;
 }
 /* MAIN */
 
