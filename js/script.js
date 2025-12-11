@@ -67,9 +67,16 @@ function validarTurno() {
 
   if (!formularioValido) return false;
 
+
+  //validacion de la fecha
+  let fecha = document.getElementById('fecha').value;
+  let fechaValida = false;
+  fechaValida = validarFecha(fecha);
+  if (!fechaValida ) return false;
+
   let hora = document.getElementById('hora').value;
   let horarioValido = false;
-  
+
   //validar rango horario
   horarioValido = validarHorario(hora);
 
@@ -80,10 +87,10 @@ function validarTurno() {
 
   //Verificacion de colision entre turnos
   turnos.forEach(turno => {
-    horarioValido = compararHorarios(turno.hora,hora);
+    horarioValido = verificarColisionHorarios(turno.hora,hora);
+    if (!horarioValido) return false;
   })
 
-  if (!horarioValido) return false;
   console.log('horario valido')
   return true;
 }
@@ -94,8 +101,9 @@ function validarTurno() {
  * @param {String} horario2 El segundo horario a comparar
  * @returns true si ambos horarios no se encuentran dentro de los 45 minutos y false en caso contrario
  */
-function compararHorarios(horario1, horario2){
-  let horas1,horas2, minutos1,minutos2;
+function verificarColisionHorarios(horario1, horario2){
+  let horas1,horas2, minutos1,minutos2, mensajeError;
+  mensajeError = document.getElementById('mensajeError');
   horas1 = Number(horario1.split(':')[0])
   minutos1 = Number(horario1.split(':')[1])
   horas2 = Number(horario2.split(':')[0])
@@ -104,6 +112,7 @@ function compararHorarios(horario1, horario2){
   
   if ((horas1 - horas2) === 0){
     if ((minutos1- minutos2) < 45){
+      mensajeError.textContent='Existe conflicto de horarios con otro turno.';
       console.log('conflicto de horarios');
       console.log('hora1:', horas1, 'min1:', minutos1);
       console.log('hora2:', horas2, 'min2:', minutos2);
@@ -120,9 +129,40 @@ function compararHorarios(horario1, horario2){
  * @returns Si el horario es valido (se encuentra entre las 07 y las 19 horas)
  */
 function validarHorario(horario){
+
+  //Hacer: validar tambien que si es el mismo dia, no se pueda reservar a menos de 2 horas de anticipacion
+
+  console.log('hora', horario)
   let mensajeError = document.getElementById('mensajeError');
   let horas = Number(horario.split(':')[0]);
   if (horas < 7 || horas > 19) {
     mensajeError.textContent = 'Debe escoger un horario entre las 07 y las 19 horas';
     return false;}
+    return true;
+}
+
+function validarFecha(fecha){
+  let inputAnio = fecha.split('-')[0];
+  let inputMes = fecha.split('-')[1];
+  let inputDia = fecha.split('-')[2];
+  let input = new Date(inputAnio, inputMes-1,inputDia);
+  let ahora = new Date();
+
+  console.log('ahora', ahora);
+  console.log('input', input);
+
+  //hacer: validar que el anio sea el mismo
+  if (input.getFullYear() !== ahora.getFullYear()) {
+    console.log('tiene que ser en el mismo anio que el corriente')
+    return false;}
+  //hacer: validar que el mes sea el mismo
+  if (input.getMonth() !== ahora.getMonth()) {
+    console.log('El turno debe sacarse este mes')
+    return false;}
+  //hacer: validar que la fecha sea posterior a ayer
+  if (input.getDate() - ahora.getDate() < 0) {
+    console.log('No puede reservarse turnos para dias ya pasados')
+    return false;}
+
+  return true;
 }
