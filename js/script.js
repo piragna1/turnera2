@@ -1,5 +1,5 @@
-let turnos = JSON.parse(localStorage.getItem('turnos')) || [];
-console.log('turnos:',turnos);
+let turnos = JSON.parse(localStorage.getItem("turnos")) || [];
+console.log("turnos:", turnos);
 
 /**
  * Este metodo invoca a validaciones y en caso de valido, agrega el turno al localStorage.
@@ -10,6 +10,8 @@ function agregarTurno(event) {
 
   //validacion
   let formularioValido = validarTurno();
+  console.log('formularioValido', formularioValido)
+
   if (!formularioValido) return;
 
   //obtencion de valores
@@ -21,25 +23,30 @@ function agregarTurno(event) {
 
   //objeto turno
   let turno = {
-    nombre,apellido,telefono,fecha,hora
-  }
+    nombre,
+    apellido,
+    telefono,
+    fecha,
+    hora,
+  };
 
   //reset del formulario
   form.reset();
-  
+
   //despersistencia de los turnos que estan en localstorage
-  turnos = localStorage.getItem('turnos');
+  turnos = localStorage.getItem("turnos");
 
   //ya existen turnos
-  if (turnos){
+  if (turnos) {
     const parsedTurnos = JSON.parse(turnos);
     turnos = parsedTurnos;
+  } else {
+    turnos = [];
   }
-  else{turnos=[]}
 
   //agrego el nuevo turno
   turnos.push(turno);
-  
+
   //Guardo la lista de turnos nueva en localstorage
   localStorage.setItem("turnos", JSON.stringify(turnos));
 }
@@ -67,102 +74,157 @@ function validarTurno() {
 
   if (!formularioValido) return false;
 
-
   //validacion de la fecha
-  let fecha = document.getElementById('fecha').value;
+  let fecha = document.getElementById("fecha").value;
   let fechaValida = false;
   fechaValida = validarFecha(fecha);
-  if (!fechaValida ) return false;
+  if (!fechaValida) return false;
 
-  let hora = document.getElementById('hora').value;
+  let hora = document.getElementById("hora").value;
   let horarioValido = false;
 
   //validar rango horario
-  horarioValido = validarHorario(hora);
+  horarioValido = validarHorario(Number(fecha.split('-')[2]), hora);
 
-  if (!horarioValido ) {
-    console.log('El horario debe sacarse entre las 07hs y las 19hs');
+  console.log('horarioValido:',horarioValido)
+  if (!horarioValido) {
     return false;
   }
 
   //Verificacion de colision entre turnos
-  turnos.forEach(turno => {
-    horarioValido = verificarColisionHorarios(turno.hora,hora);
+  for (let i = 0; i < turnos.length; i++){
+    let turno = turnos[i];
+    // console.log('turno:', turno);
+    horarioValido = verificarColisionHorarios(turno.fecha.split('-')[2], fecha.split('-')[2],turno.hora,hora);
     if (!horarioValido) return false;
-  })
+  }
 
-  console.log('horario valido')
+  console.log("horario valido");
   return true;
 }
 
-/**
+/** hacer:redocumentar
  * Este metodo compara dos horarios y verifica si se encuentran a mas de 45 minutos uno de otro
  * @param {String} horario1 El primer horario a comparar
  * @param {String} horario2 El segundo horario a comparar
  * @returns true si ambos horarios no se encuentran dentro de los 45 minutos y false en caso contrario
  */
-function verificarColisionHorarios(horario1, horario2){
-  let horas1,horas2, minutos1,minutos2, mensajeError;
-  mensajeError = document.getElementById('mensajeError');
-  horas1 = Number(horario1.split(':')[0])
-  minutos1 = Number(horario1.split(':')[1])
-  horas2 = Number(horario2.split(':')[0])
-  minutos2 = Number(horario2.split(':')[1])
+function verificarColisionHorarios(dia1,dia2,horario1, horario2) {
 
-  
-  if ((horas1 - horas2) === 0){
-    if ((minutos1- minutos2) < 45){
-      mensajeError.textContent='Existe conflicto de horarios con otro turno.';
-      console.log('conflicto de horarios');
-      console.log('hora1:', horas1, 'min1:', minutos1);
-      console.log('hora2:', horas2, 'min2:', minutos2);
-      return false
+  //hacer : el metodo no distingue dias, por lo que pueden conflictuar turnos de diferentes dias.
+  //ahora verificar primero si se trata del mismo dia, luego verificar horarios
+
+
+  let horas1, horas2, minutos1, minutos2, mensajeError;
+  mensajeError = document.getElementById("mensajeError");
+  horas1 = Number(horario1.split(":")[0]);
+  minutos1 = Number(horario1.split(":")[1]);
+  horas2 = Number(horario2.split(":")[0]);
+  minutos2 = Number(horario2.split(":")[1]);
+
+  if (horas1 - horas2 === 0) {
+    if (minutos1 - minutos2 < 45) {
+      //verificar que sean del mismo dia
+      if(dia1===dia2){ 
+        mensajeError.textContent = "Existe conflicto de horarios con otro turno.";
+        console.log("conflicto de horarios");
+        console.log("hora1:", horas1, "min1:", minutos1);
+        console.log("hora2:", horas2, "min2:", minutos2);
+        return false;
+      }
     }
   }
 
   return true;
 }
 
-/**
- * Funcion que valida si un horario se encuentra entre las 07 y las 19 horas
+/** Hacer:Redocumentar
+ * Funcion que valida si un horario se encuentra entre las 07 y las 19 horas y...
  * @param {String} horario El horario en formato de string. Ejemplo: '21:20'
  * @returns Si el horario es valido (se encuentra entre las 07 y las 19 horas)
  */
-function validarHorario(horario){
-
+function validarHorario(dia,horario) {
   //Hacer: validar tambien que si es el mismo dia, no se pueda reservar a menos de 2 horas de anticipacion
+  let ahora = new Date();
+  let diaAhora = ahora.getDate();
 
-  console.log('hora', horario)
-  let mensajeError = document.getElementById('mensajeError');
-  let horas = Number(horario.split(':')[0]);
-  if (horas < 7 || horas > 19) {
-    mensajeError.textContent = 'Debe escoger un horario entre las 07 y las 19 horas';
-    return false;}
-    return true;
+  console.log('dia ahora:', diaAhora, 'dia turno:', dia)
+
+  console.log("hora", horario);
+  let mensajeError = document.getElementById("mensajeError");
+  let horas = Number(horario.split(":")[0]);
+  let minutos = Number(horario.split(":")[1]);
+  console.log('horas', horas)
+  console.log('horas < 7', horas < 7)
+  console.log('horas >= 19', horas >= 19)
+  console.log('minutos', minutos)
+  if (horas < 7 || horas >= 19) {
+    console.log('horas < 7 || horas > 19')
+    mensajeError.textContent =
+      "Debe escoger un horario entre las 07 y las 19 horas";
+    console.log("El horario debe sacarse entre las 07hs y las 19hs");
+    return false;
+  }
+
+  console.log('horario:',horario);
+  console.log('ahora horas:',ahora.getHours());
+  console.log('ahora minutos:',ahora.getMinutes());
+
+  
+  //tener en cuenta que puede dar negativo pero el dia puede ser posterior a hoy, por lo que el calculo seria enganioso
+
+  //verificar el espaciado de dos horas solamente si el turno es para el dia de hoy
+
+  console.log('diaAhora',diaAhora,'dia',dia)
+
+
+  if (diaAhora === dia){
+    //comparar espaciado
+    console.log('turno horas - ahora horas:',horas - ahora.getHours());
+    console.log('turno mins - ahora minutos:',minutos - ahora.getMinutes());
+    if (horas - ahora.getHours() < 2 && horas-ahora.getHours() >= 0) {
+      console.log('El turno no puede sacarse con menos de 2 horas de anticipacion')
+      return false;}
+    else{
+      console.log('Esa hora ya ha pasado');
+      return false;
+    }
+  }
+
+
+  return true;
 }
 
-function validarFecha(fecha){
-  let inputAnio = fecha.split('-')[0];
-  let inputMes = fecha.split('-')[1];
-  let inputDia = fecha.split('-')[2];
-  let input = new Date(inputAnio, inputMes-1,inputDia);
+/**
+ * Este metodo verifica que el turno se saque el mismo anio y el mismo mes y que el dia sea posterior a ayer.
+ * @param {String} fecha La fecha del turno
+ * @returns true si es valida la fecha y false en caso contrario
+ */
+function validarFecha(fecha) {
+  let inputAnio = fecha.split("-")[0];
+  let inputMes = fecha.split("-")[1];
+  let inputDia = fecha.split("-")[2];
+  let input = new Date(inputAnio, inputMes - 1, inputDia);
   let ahora = new Date();
 
-  console.log('ahora', ahora);
-  console.log('input', input);
+  console.log("ahora", ahora);
+  console.log("input", input);
 
   //hacer: validar que el anio sea el mismo
   if (input.getFullYear() !== ahora.getFullYear()) {
-    console.log('tiene que ser en el mismo anio que el corriente')
-    return false;}
+    console.log("tiene que ser en el mismo anio que el corriente");
+    return false;
+  }
   //hacer: validar que el mes sea el mismo
   if (input.getMonth() !== ahora.getMonth()) {
-    console.log('El turno debe sacarse este mes')
-    return false;}
+    console.log("El turno debe sacarse este mes");
+    return false;
+  }
   //hacer: validar que la fecha sea posterior a ayer
   if (input.getDate() - ahora.getDate() < 0) {
-    console.log('No puede reservarse turnos para dias ya pasados')
-    return false;}
+    console.log("No puede reservarse turnos para dias ya pasados");
+    return false;
+  }
 
   return true;
 }
