@@ -277,7 +277,11 @@ function validarFecha(fecha) {
 
   return true;
 }
-
+/**
+ * Este metodo valida el nombre ingresado por el usuario a traves de una expresion regular que solo permite enviar letras y espacios.
+ * @param {String} nombre El nombre de la persona que quiere reservar el turno
+ * @returns true si el nombre se considera valido y false en caso contrario
+ */
 function validarNombre(nombre) {
 
   console.log('VALIDAR NOMBRE')
@@ -314,6 +318,12 @@ function validarNombre(nombre) {
   return true;
 }
 
+
+/**
+ * Este metodo valida el apellido ingresado a traves de una expresion regular que permite unicamente ingresar letras y espacios.
+ * @param {String} apellido El apellido de la persona que esta reservando el turno
+ * @returns true si el apellido cumple con la expresion regular y false en caso contrario
+ */
 function validarApellido(apellido) {
 
   console.log('VALIDAR apellido')
@@ -354,6 +364,12 @@ function validarApellido(apellido) {
 
 
 //implementar
+
+/**
+ * Este metodo valida que el numero de telefono sea uno valido
+ * @param {String} telefono El numero de telefono del usuario que esta reservando el turno.
+ * @returns true si es valido y false en caso contrario.
+ */
 function validarTelefono(telefono) {
   const phoneRegex = /^(\+?\d{1,3}[\s-]?)?(\(?\d{2,4}\)?[\s-]?)?\d{3,4}[\s-]?\d{3,4}$/;
 if (!phoneRegex.test(telefono)){
